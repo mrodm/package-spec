@@ -18,21 +18,27 @@ func TestIsDefinedWarningsAsErrors(t *testing.T) {
 		{"false", "false", false},
 		{"other", "other", false},
 		{"empty", "", false},
-		{"undefined", nil, false},
 	}
 
 	for _, test := range cases {
 		t.Run(test.name, func(t *testing.T) {
-			if test.envVarValue != nil {
-				if err := os.Setenv(EnvVarWarningsAsErrors, test.envVarValue); err != nil {
-					require.NoError(t, err)
-				}
+			if err := os.Setenv(EnvVarWarningsAsErrors, test.envVarValue); err != nil {
+				require.NoError(t, err)
 			}
 			value := IsDefinedWarningsAsErrors()
 			assert.Equal(t, test.expected, value)
+
+			if err := DisableWarningsAsErrors(); err != nil {
+				require.NoError(t, err)
+			}
 		})
 	}
-	if err := os.Unsetenv(EnvVarWarningsAsErrors); err != nil {
-		require.NoError(t, err)
-	}
+
+	t.Run("undefined", func(t *testing.T) {
+		if err := DisableWarningsAsErrors(); err != nil {
+			require.NoError(t, err)
+		}
+		value := IsDefinedWarningsAsErrors()
+		assert.Equal(t, false, value)
+	})
 }

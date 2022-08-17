@@ -6,13 +6,13 @@ package validator
 
 import (
 	"fmt"
-	"os"
 	"path"
 	"path/filepath"
 	"strings"
 	"testing"
 
 	"github.com/elastic/package-spec/code/go/internal/errors"
+	"github.com/elastic/package-spec/code/go/internal/validator/common"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -316,7 +316,7 @@ func TestValidateWarnings(t *testing.T) {
 			"references found in dashboard kibana/dashboard/visualizations_by_reference-82273ffe-6acc-4f2f-bbee-c1004abba63d.json: visualizations_by_reference-5e1a01ff-6f9a-41c1-b7ad-326472db42b6 (visualization), visualizations_by_reference-8287a5d5-1576-4f3a-83c4-444e9058439b (lens)",
 		},
 	}
-	if err := os.Setenv("PACKAGE_SPEC_WARNINGS_AS_ERRORS", "true"); err != nil {
+	if err := common.EnableWarningsAsErrors(); err != nil {
 		require.NoError(t, err)
 	}
 	for pkgName, expectedWarnContains := range tests {
@@ -346,6 +346,9 @@ func TestValidateWarnings(t *testing.T) {
 				require.Equal(t, errs.Error(), expectedWarnContains[0])
 			}
 		})
+	}
+	if err := common.DisableWarningsAsErrors(); err != nil {
+		require.NoError(t, err)
 	}
 }
 

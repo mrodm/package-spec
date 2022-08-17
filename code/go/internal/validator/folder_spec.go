@@ -18,6 +18,7 @@ import (
 
 	ve "github.com/elastic/package-spec/code/go/internal/errors"
 	"github.com/elastic/package-spec/code/go/internal/spectypes"
+	"github.com/elastic/package-spec/code/go/internal/validator/common"
 )
 
 const (
@@ -71,7 +72,7 @@ func (s *folderSpec) load(fs fs.FS, specPath string) error {
 	return nil
 }
 
-func (s *folderSpec) validate(pkg *Package, folderPath string, warningsAsErrors bool) ve.ValidationErrors {
+func (s *folderSpec) validate(pkg *Package, folderPath string) ve.ValidationErrors {
 	var errs ve.ValidationErrors
 	files, err := fs.ReadDir(pkg, folderPath)
 	if err != nil {
@@ -93,7 +94,7 @@ func (s *folderSpec) validate(pkg *Package, folderPath string, warningsAsErrors 
 		if pkg.Version.Major() > 0 && pkg.Version.Prerelease() == "" {
 			errs = append(errs, errors.Errorf("spec for [%s] defines beta features which can't be enabled for packages with a stable semantic version", pkg.Path(folderPath)))
 		} else {
-			if warningsAsErrors {
+			if common.IsDefinedWarningsAsErrors {
 				errs = append(errs, errors.Errorf("Warning: package with non-stable semantic version and active beta features (enabled in [%s]) can't be released as stable version.", pkg.Path(folderPath)))
 			} else {
 				log.Printf("Warning: package with non-stable semantic version and active beta features (enabled in [%s]) can't be released as stable version.", pkg.Path(folderPath))
@@ -168,7 +169,7 @@ func (s *folderSpec) validate(pkg *Package, folderPath string, warningsAsErrors 
 			}
 
 			subFolderPath := path.Join(folderPath, fileName)
-			subErrs := subFolderSpec.validate(pkg, subFolderPath, warningsAsErrors)
+			subErrs := subFolderSpec.validate(pkg, subFolderPath)
 			if len(subErrs) > 0 {
 				errs = append(errs, subErrs...)
 			}

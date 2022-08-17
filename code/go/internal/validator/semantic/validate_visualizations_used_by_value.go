@@ -14,6 +14,7 @@ import (
 	ve "github.com/elastic/package-spec/code/go/internal/errors"
 	"github.com/elastic/package-spec/code/go/internal/fspath"
 	"github.com/elastic/package-spec/code/go/internal/pkgpath"
+	"github.com/elastic/package-spec/code/go/internal/validator/common"
 )
 
 type reference struct {
@@ -27,7 +28,8 @@ type reference struct {
 // That is, it warns if a Kibana dashbaord file, foo.json,
 // defines some visualization using reference (containing an element of
 // "visualization" type inside references key).
-func ValidateVisualizationsUsedByValue(fsys fspath.FS, warningsAsErrors bool) ve.ValidationErrors {
+func ValidateVisualizationsUsedByValue(fsys fspath.FS) ve.ValidationErrors {
+	warningsAsErrors := common.IsDefinedWarningsAsErrors()
 	var errs ve.ValidationErrors
 
 	filePaths := path.Join("kibana", "dashboard", "*.json")

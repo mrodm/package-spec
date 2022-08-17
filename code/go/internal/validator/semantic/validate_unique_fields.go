@@ -15,7 +15,7 @@ import (
 )
 
 // ValidateUniqueFields verifies that any field is defined only once on each data stream.
-func ValidateUniqueFields(fsys fspath.FS, warningsAsErrors bool) ve.ValidationErrors {
+func ValidateUniqueFields(fsys fspath.FS) ve.ValidationErrors {
 	// data_stream -> field -> files
 	fields := make(map[string]map[string][]string)
 

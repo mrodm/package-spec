@@ -46,7 +46,7 @@ func TestNoBetaFeatures_Package_GA(t *testing.T) {
 	pkg, err := NewPackage("testdata/packages/features_ga")
 	require.NoError(t, err)
 
-	err = s.ValidatePackage(*pkg, false)
+	err = s.ValidatePackage(*pkg)
 	require.Empty(t, err)
 }
 
@@ -60,7 +60,7 @@ func TestBetaFeatures_Package_GA(t *testing.T) {
 	pkg, err := NewPackage("testdata/packages/features_beta")
 	require.NoError(t, err)
 
-	errs := s.ValidatePackage(*pkg, false)
+	errs := s.ValidatePackage(*pkg)
 	require.Len(t, errs, 1)
 	require.Equal(t, errs[0].Error(), "spec for [testdata/packages/features_beta/beta] defines beta features which can't be enabled for packages with a stable semantic version")
 }

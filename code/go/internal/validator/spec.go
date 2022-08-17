@@ -25,7 +25,7 @@ type Spec struct {
 	specPath string
 }
 
-type validationRules []func(pkg fspath.FS, warningsAsErrors bool) ve.ValidationErrors
+type validationRules []func(pkg fspath.FS) ve.ValidationErrors
 
 // NewSpec creates a new Spec for the given version
 func NewSpec(version semver.Version) (*Spec, error) {
@@ -47,7 +47,7 @@ func NewSpec(version semver.Version) (*Spec, error) {
 }
 
 // ValidatePackage validates the given Package against the Spec
-func (s Spec) ValidatePackage(pkg Package, warningsAsErrors bool) ve.ValidationErrors {
+func (s Spec) ValidatePackage(pkg Package) ve.ValidationErrors {
 	var errs ve.ValidationErrors
 
 	var rootSpec folderSpec
@@ -59,7 +59,7 @@ func (s Spec) ValidatePackage(pkg Package, warningsAsErrors bool) ve.ValidationE
 	}
 
 	// Syntactic validations
-	errs = rootSpec.validate(&pkg, ".", warningsAsErrors)
+	errs = rootSpec.validate(&pkg, ".")
 	if len(errs) != 0 {
 		return errs
 	}
@@ -79,13 +79,13 @@ func (s Spec) ValidatePackage(pkg Package, warningsAsErrors bool) ve.ValidationE
 		semantic.ValidateVisualizationsUsedByValue,
 	}
 
-	return rules.validate(&pkg, warningsAsErrors)
+	return rules.validate(&pkg)
 }
 
-func (vr validationRules) validate(fsys fspath.FS, warningsAsErrors bool) ve.ValidationErrors {
+func (vr validationRules) validate(fsys fspath.FS) ve.ValidationErrors {
 	var errs ve.ValidationErrors
 	for _, validationRule := range vr {
-		err := validationRule(fsys, warningsAsErrors)
+		err := validationRule(fsys)
 		errs.Append(err)
 	}
 

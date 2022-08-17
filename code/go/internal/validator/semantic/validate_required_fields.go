@@ -13,7 +13,7 @@ import (
 
 // ValidateRequiredFields validates that required fields are present and have the expected
 // types.
-func ValidateRequiredFields(fsys fspath.FS, warningsAsErrors bool) ve.ValidationErrors {
+func ValidateRequiredFields(fsys fspath.FS) ve.ValidationErrors {
 	requiredFields := map[string]string{
 		"data_stream.type":      "constant_keyword",
 		"data_stream.dataset":   "constant_keyword",

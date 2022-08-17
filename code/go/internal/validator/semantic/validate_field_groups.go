@@ -12,7 +12,7 @@ import (
 )
 
 // ValidateFieldGroups verifies if field groups don't have units and metric types defined.
-func ValidateFieldGroups(fsys fspath.FS, warningsAsErrors bool) errors.ValidationErrors {
+func ValidateFieldGroups(fsys fspath.FS) errors.ValidationErrors {
 	return validateFields(fsys, validateFieldUnit)
 }
 

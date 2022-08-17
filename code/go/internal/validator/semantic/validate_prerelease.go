@@ -32,7 +32,7 @@ var (
 )
 
 // ValidatePrerelease validates additional restrictions on the prerelease tags.
-func ValidatePrerelease(fsys fspath.FS, warningsAsErrors bool) ve.ValidationErrors {
+func ValidatePrerelease(fsys fspath.FS) ve.ValidationErrors {
 	manifestVersion, err := readManifestVersion(fsys)
 	if err != nil {
 		return ve.ValidationErrors{err}

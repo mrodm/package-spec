@@ -17,7 +17,7 @@ import (
 
 // ValidateVersionIntegrity returns validation errors if the version defined in manifest isn't referenced in the latest
 // entry of the changelog file.
-func ValidateVersionIntegrity(fsys fspath.FS, warningsAsErrors bool) ve.ValidationErrors {
+func ValidateVersionIntegrity(fsys fspath.FS) ve.ValidationErrors {
 	manifestVersion, err := readManifestVersion(fsys)
 	if err != nil {
 		return ve.ValidationErrors{err}

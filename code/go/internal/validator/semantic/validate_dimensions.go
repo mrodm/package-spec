@@ -13,7 +13,7 @@ import (
 )
 
 // ValidateDimensionFields verifies if dimension fields are of one of the expected types.
-func ValidateDimensionFields(fsys fspath.FS) errors.ValidationErrors {
+func ValidateDimensionFields(fsys fspath.FS, warningsAsErrors bool) errors.ValidationErrors {
 	return validateFields(fsys, validateDimensionField)
 }
 

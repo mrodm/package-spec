@@ -27,7 +27,7 @@ type reference struct {
 // That is, it warns if a Kibana dashbaord file, foo.json,
 // defines some visualization using reference (containing an element of
 // "visualization" type inside references key).
-func ValidateVisualizationsUsedByValue(fsys fspath.FS) ve.ValidationErrors {
+func ValidateVisualizationsUsedByValue(fsys fspath.FS, warningsAsErrors bool) ve.ValidationErrors {
 	var errs ve.ValidationErrors
 
 	filePaths := path.Join("kibana", "dashboard", "*.json")
@@ -55,7 +55,12 @@ func ValidateVisualizationsUsedByValue(fsys fspath.FS) ve.ValidationErrors {
 			for _, ref := range references[1:] {
 				s = fmt.Sprintf("%s, %s (%s)", s, ref.ID, ref.Type)
 			}
-			log.Printf("Warning: references found in dashboard %s: %s", filePath, s)
+			if warningsAsErrors {
+				errs = append(errs, errors.Errorf("Warning: references found in dashboard %s: %s", filePath, s))
+			} else {
+				log.Printf("Warning: references found in dashboard %s: %s", filePath, s)
+			}
+
 		}
 	}
 

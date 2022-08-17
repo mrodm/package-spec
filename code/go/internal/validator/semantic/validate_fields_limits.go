@@ -12,8 +12,8 @@ import (
 )
 
 // ValidateFieldsLimits verifies limits on fields.
-func ValidateFieldsLimits(limit int) func(fspath.FS) ve.ValidationErrors {
-	return func(fsys fspath.FS) ve.ValidationErrors {
+func ValidateFieldsLimits(limit int) func(fspath.FS, bool) ve.ValidationErrors {
+	return func(fsys fspath.FS, warningsAsErrors bool) ve.ValidationErrors {
 		return validateFieldsLimits(fsys, limit)
 	}
 }

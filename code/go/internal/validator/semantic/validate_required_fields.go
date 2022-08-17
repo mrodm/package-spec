@@ -5,14 +5,15 @@
 package semantic
 
 import (
+	"github.com/pkg/errors"
+
 	ve "github.com/elastic/package-spec/code/go/internal/errors"
 	"github.com/elastic/package-spec/code/go/internal/fspath"
-	"github.com/pkg/errors"
 )
 
 // ValidateRequiredFields validates that required fields are present and have the expected
 // types.
-func ValidateRequiredFields(fsys fspath.FS) ve.ValidationErrors {
+func ValidateRequiredFields(fsys fspath.FS, warningsAsErrors bool) ve.ValidationErrors {
 	requiredFields := map[string]string{
 		"data_stream.type":      "constant_keyword",
 		"data_stream.dataset":   "constant_keyword",

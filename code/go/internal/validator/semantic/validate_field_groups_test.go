@@ -18,7 +18,7 @@ import (
 func TestValidateFieldGroups_Good(t *testing.T) {
 	pkgRoot := "../../../../../test/packages/good"
 
-	errs := ValidateFieldGroups(fspath.DirFS(pkgRoot))
+	errs := ValidateFieldGroups(fspath.DirFS(pkgRoot), false)
 	require.Empty(t, errs)
 }
 
@@ -31,7 +31,7 @@ func TestValidateFieldGroups_Bad(t *testing.T) {
 			expected)
 	}
 
-	errs := ValidateFieldGroups(fspath.DirFS(pkgRoot))
+	errs := ValidateFieldGroups(fspath.DirFS(pkgRoot), false)
 	if assert.Len(t, errs, 3) {
 		assert.Equal(t, fileError("data_stream/bar/fields/hello-world.yml", `field "aaa.bbb" can't have unit property'`), errs[0].Error())
 		assert.Equal(t, fileError("data_stream/bar/fields/hello-world.yml", `field "ddd.eee" can't have unit property'`), errs[1].Error())

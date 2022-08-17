@@ -71,7 +71,7 @@ func (s *folderSpec) load(fs fs.FS, specPath string) error {
 	return nil
 }
 
-func (s *folderSpec) validate(pkg *Package, folderPath string) ve.ValidationErrors {
+func (s *folderSpec) validate(pkg *Package, folderPath string, warningsAsErrors bool) ve.ValidationErrors {
 	var errs ve.ValidationErrors
 	files, err := fs.ReadDir(pkg, folderPath)
 	if err != nil {
@@ -93,7 +93,11 @@ func (s *folderSpec) validate(pkg *Package, folderPath string) ve.ValidationErro
 		if pkg.Version.Major() > 0 && pkg.Version.Prerelease() == "" {
 			errs = append(errs, errors.Errorf("spec for [%s] defines beta features which can't be enabled for packages with a stable semantic version", pkg.Path(folderPath)))
 		} else {
-			log.Printf("Warning: package with non-stable semantic version and active beta features (enabled in [%s]) can't be released as stable version.", pkg.Path(folderPath))
+			if warningsAsErrors {
+				errs = append(errs, errors.Errorf("Warning: package with non-stable semantic version and active beta features (enabled in [%s]) can't be released as stable version.", pkg.Path(folderPath)))
+			} else {
+				log.Printf("Warning: package with non-stable semantic version and active beta features (enabled in [%s]) can't be released as stable version.", pkg.Path(folderPath))
+			}
 		}
 	default:
 		errs = append(errs, errors.Errorf("unsupport release level, supported values: beta, ga"))
@@ -164,7 +168,7 @@ func (s *folderSpec) validate(pkg *Package, folderPath string) ve.ValidationErro
 			}
 
 			subFolderPath := path.Join(folderPath, fileName)
-			subErrs := subFolderSpec.validate(pkg, subFolderPath)
+			subErrs := subFolderSpec.validate(pkg, subFolderPath, warningsAsErrors)
 			if len(subErrs) > 0 {
 				errs = append(errs, subErrs...)
 			}

@@ -20,7 +20,7 @@ import (
 // object files that define IDs not matching the file's name. That is, it returns
 // validation errors if a Kibana object file, foo.json, in the package defines
 // an object ID other than foo inside it.
-func ValidateKibanaObjectIDs(fsys fspath.FS) ve.ValidationErrors {
+func ValidateKibanaObjectIDs(fsys fspath.FS, warningsAsErrors bool) ve.ValidationErrors {
 	var errs ve.ValidationErrors
 
 	filePaths := path.Join("kibana", "*", "*.json")

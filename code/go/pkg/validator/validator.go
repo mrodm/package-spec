@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"strconv"
 
 	"github.com/elastic/package-spec/code/go/internal/validator"
 )
@@ -61,7 +62,16 @@ func ValidateFromFS(location string, fsys fs.FS) error {
 		return err
 	}
 
-	if errs := spec.ValidatePackage(*pkg); errs != nil && len(errs) > 0 {
+	warningsAsErrors := false
+	warningsAsErrorsStr, found := os.LookupEnv("PACKAGE_SPEC_WARNINGS_AS_ERRORS")
+	if found {
+		warningsAsErrors, err = strconv.ParseBool(warningsAsErrorsStr)
+		if err != nil {
+			return errors.New("invalid value for PACKAGE_SPEC_WARNINGS_AS_ERRORS")
+		}
+	}
+
+	if errs := spec.ValidatePackage(*pkg, warningsAsErrors); errs != nil && len(errs) > 0 {
 		return errs
 	}
 
